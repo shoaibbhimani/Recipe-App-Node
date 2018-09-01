@@ -1,0 +1,7 @@
+extends layout
+
+block content
+   .ui.grid
+     each recipe in recipes
+      .four.wide
+       img(src="/uploads/" + recipe.imageName + ".jpeg" class="medium ui image")
