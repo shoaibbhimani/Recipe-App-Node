@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  .jumbotron.jumbotron-fluid
+    .container
+      h1.display-4=recipe.name
+      p.lead=recipe.description
+      pre=JSON.stringify(recipe)
+      .list-group
+      each direction in recipe.directions
+        .list-group-item=direction

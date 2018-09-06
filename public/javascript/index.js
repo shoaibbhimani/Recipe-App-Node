@@ -1,14 +1,14 @@
 (function() {
   $(function() {
-    $(".instructions").on("click", ".removebtn", function(event) {
+    $(".directions").on("click", ".remove-btn", function(event) {
       $(event.target)
-        .closest(".fields")
+        .parent()
         .remove();
     });
 
     $("#add").on("click", function() {
-      $(".instructions").append(
-        '<div class="fields"> <div class="twelve wide field"><input type="text" name="instructions"></div><div class="four wide field"><button class="ui button">Remove Photo</button></div></div>'
+      $(".directions").append(
+        '<div class="input-group"><input class="form-control" name="directions" type="text" placeholder="Instruction"><div class="input-group-append" id="button-addon4"></div><button class="btn btn-outline-secondary remove-btn" type="button">Remove</button></div>'
       );
     });
   });

@@ -14,7 +14,8 @@ const recipeSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      trim: true
+      trim: true,
+      required: "Please enter a Recipe Description"
     },
     directions: [
       {

@@ -7,6 +7,7 @@ const jimp = require("jimp");
 const uuid = require("uuid");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const { check, validationResult } = require("express-validator/check");
 
 // Multer Configuration
 const upload = multer({
@@ -42,7 +43,6 @@ app.use(express.static("public"));
 app
   .get("/", async (req, res) => {
     const recipes = await Recipe.find({});
-    console.log(recipes);
     res.render("recipes", {
       title: "Recipes List",
       recipes
@@ -53,27 +53,54 @@ app
       title: "Add New Recipe"
     });
   })
-  .post("/recipe/add", upload.single("photo"), async (req, res) => {
-    // check if there is no new file to resize
-    if (!req.file) {
-      return;
+  .get("/recipe/:recipeId", async (req, res) => {
+    const recipe = await Recipe.findOne({ _id: req.params.recipeId });
+    res.render("recipe_details", {
+      title: "Recipes Details",
+      recipe
+    });
+  })
+  .post(
+    "/recipe/add",
+    upload.single("photo"),
+    [
+      check("name")
+        .isLength({ min: 3 })
+        .withMessage("must be at least 3 chars long"),
+      check("description")
+        .isLength({ min: 5 })
+        .withMessage("must be at least 5 chars long"),
+      check("directions")
+        .isLength({ min: 1 })
+        .withMessage("must be at least 1 direction")
+    ],
+    async (req, res) => {
+      // Finds the validation errors in this request and wraps them in an object with handy functions
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        let arr = errors.array().reduce((acc, currentValue) => {
+             acc[currentValue.param] = currentValue.msg
+            return acc;
+        }, {})
+        return res.redirect("/recipe/new")
+      }
+
+      // check if there is no new file to resize
+      if (!req.file) {
+        return;
+      }
+
+
+      const recipe = new Recipe();
+      recipe.name = req.body.name;
+      recipe.imageName = imageName;
+      recipe.description = req.body.description;
+      recipe.directions = req.body.directions;
+      await recipe.save();
+
+      await res.redirect("/recipe/new");
     }
-
-    const extension = req.file.mimetype.split("/")[1];
-    const imageName = req.file.originalname.split(".")[0];
-    const photo = await jimp.read(req.file.buffer);
-    await photo.resize(400, 300);
-    await photo.write(`./public/uploads/${imageName}.${extension}`);
-
-    const recipe = new Recipe();
-    recipe.name = req.body.name;
-    recipe.imageName = imageName;
-    recipe.description = req.body.description;
-    recipe.instructions = req.body.instructions;
-    await recipe.save();
-
-    await res.redirect("/recipe/new");
-  });
+  );
 
 //Server
 const PORT = 7777;
