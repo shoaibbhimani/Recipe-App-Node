@@ -1,28 +1,30 @@
 extends layout
 
 block content
- pre=JSON.stringify(errors, null, 4)
+ - const directionText = body && body.directions ? body.directions : [""];
+ - const directions =  typeof directionText === "string" ? [directionText] : directionText;
  div(style="width:50%;margin:0 auto;")
   h2 Add New Recipe
   form(action="/recipe/add" method="POST" enctype="multipart/form-data")
     .form-group
         label(for='name') Name
-        input.form-control(name="name" type='text', placeholder='eg:Poha')
+        input.form-control(class=errors && errors.name ? "text-error" : ""  name="name" type='text', placeholder='eg:Poha' value=body && body.name)
         if errors && errors.name
-         small#emailHelp.form-text.text-muted We'll never share your email with anyone else.
+         small#emailHelp.form-text.text-error= errors.name
     .form-group
         label(for='description') Description
-        input.form-control(name="description" type='text', placeholder='eg: Description')
+        input.form-control(class=errors && errors.description ? "text-error" : "" name="description" type='text', placeholder='eg: Description' value=body && body.description)
         if errors && errors.description
-         small#emailHelp.form-text.text-muted We'll never share your email with anyone else.
+         small#emailHelp.form-text.text-error=errors.description
     .form-group
         label(for='photo') Photo
         input(type="file" name="photo" id="photo" accept="image/gif, image/png, image/jpeg")
     .form-group
     div Add Directions
         div.directions
-            .input-group
-                input.form-control(type='text', placeholder="Recipient's username" name="directions")
-                button.btn.btn-outline-secondary.remove-btn(type='button') Remove
+            each direction in directions
+                .input-group
+                    input.form-control(type='text' value=direction placeholder="Recipient's username" name="directions")
+                    button.btn.btn-outline-secondary.remove-btn(type='button') Remove
         button(type="button" class="btn btn-small" id="add") Add Photo
     input(type="submit" value="Save →" class="btn btn-primary")

@@ -1,0 +1,8 @@
+extends layout
+
+block content
+  .inner
+    h2= status
+    p= message  
+    if stack 
+     pre=JSON.stringify(stack, null, 4)

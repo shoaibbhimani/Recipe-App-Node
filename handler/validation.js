@@ -7,8 +7,5 @@ module.exports = {
     check("description")
       .isLength({ min: 5 })
       .withMessage("must be at least 5 chars long"),
-    check("directions")
-      .isLength({ min: 1 })
-      .withMessage("must be at least 1 direction")
   ]
 };

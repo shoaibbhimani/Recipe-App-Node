@@ -1,7 +1,8 @@
 const router = require("express").Router();
+const mongoose = require("mongoose");
 const cloudinary = require("cloudinary");
 const { check, validationResult } = require("express-validator/check");
-const Recipe = require("../models/recipe");
+const Recipe = mongoose.model("Recipe");
 
 const upload = require("../handler/multer");
 const validation = require("../handler/validation");
@@ -31,6 +32,7 @@ router
     upload.single("photo"),
     validation.validateRegisterRecipe,
     async (req, res) => {
+      let uploadResult = '';
       // Finds the validation errors in this request and wraps them in an object with handy functions
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -39,13 +41,20 @@ router
           return acc;
         }, {});
 
-        return res.redirect("/recipe/new");
+        return res.render("form", {
+          title: "Add New Recipe",
+          body: req.body,
+          errors: arr
+        });
       }
 
-      const uploadResult = await cloudinary.uploader.upload(req.file.path);
+      if(req.file){
+        uploadResult  = await cloudinary.uploader.upload(req.file.path);
+      }
+
       const recipe = new Recipe();
       recipe.name = req.body.name;
-      recipe.imageName = uploadResult.secure_url;
+      recipe.imageName = uploadResult ? uploadResult.secure_url : '/uploads/default.jpeg';
       recipe.description = req.body.description;
       recipe.directions = req.body.directions;
       await recipe.save();

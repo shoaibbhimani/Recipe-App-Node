@@ -1,11 +1,10 @@
 extends layout
 
 block content
-  .jumbotron.jumbotron-fluid
+  .jumbotron.jumbotron-fluid(style=`background:url(${recipe.imageName}) no-repeat; background-size:cover;`)
     .container
-      h1.display-4=recipe.name
-      p.lead=recipe.description
-      pre=JSON.stringify(recipe)
+      h1.display-4.text-white=recipe.name
+      p.lead.text-white=recipe.description
       .list-group
       each direction in recipe.directions
         .list-group-item=direction

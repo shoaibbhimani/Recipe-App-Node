@@ -1,35 +1,57 @@
 const express = require("express");
 const app = express();
-require("dotenv").config();
 const path = require("path");
-const jimp = require("jimp");
-const uuid = require("uuid");
 const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
-const { check, validationResult } = require("express-validator/check");
+require("dotenv").config();
+require("express-async-errors");
 
-//Configuration
-require("./handler/multer");
-require("./handler/cloudinary");
+//Database Configuration
+require("./mongoose");
 
 //Models
-require("./models/mongoose");
-require("./models/recipe");
-
-//Mongoose
-const Recipe = mongoose.model("recipe");
+require("./models/Recipe");
+require("./models/User");
 
 //Set Templating Engine
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
 //MiddleWare
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static("public"));
+app
+  .use(bodyParser.json())
+  .use(bodyParser.urlencoded({ extended: true }))
+  .use(express.static("public"));
+
+//Image Configuration
+require("./handler/multer");
+require("./handler/cloudinary");
 
 //Routes
-app.use("/", require("./routes/recipe"));
+app.use("/", require("./routes/recipe")).use("/", require("./routes/auth"));
+
+//Not Found Route
+app.use((req, res) => {
+  res.render("404", {
+    title: "Page Not Found"
+  });
+});
+
+//error handler
+if (app.get("env") === "production") {
+  app.use((error, req, res, next) => {
+    res.render("error", {
+      title: "Error",
+      message: error.message
+    });
+  });
+} else {
+  app.use((error, req, res, next) => {
+    res.render("error", {
+      message: error.message,
+      stack: error.stack
+    });
+  });
+}
 
 //Server
 const PORT = 7777;

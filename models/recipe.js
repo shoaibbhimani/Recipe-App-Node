@@ -7,15 +7,14 @@ const recipeSchema = new mongoose.Schema(
       trim: true,
       required: "Please enter a Recipe name!"
     },
-    imageName: {
-      type: String,
-      trim: true,
-      required: "Please enter a Image Name"
-    },
     description: {
       type: String,
       trim: true,
       required: "Please enter a Recipe Description"
+    },
+    imageName: {
+      type: String,
+      trim: true,
     },
     directions: [
       {
@@ -28,11 +27,16 @@ const recipeSchema = new mongoose.Schema(
         type: String,
         required: "You must supply ingredients"
       }
-    ]
+    ],
+    // created_by: {
+    //   type: mongoose.Schema.ObjectId,
+    //   ref: "User",
+    //   required: "You must supply an Created"
+    // }
   },
   {
     timestamps: true
   }
 );
 
-module.exports = mongoose.model("recipe", recipeSchema);
+module.exports = mongoose.model("Recipe", recipeSchema);

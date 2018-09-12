@@ -3,11 +3,15 @@ extends layout
 block content
   .container
     .row
-      each recipe in recipes
-        .col-sm-4
-         .card(style='width: 18rem;')
-          img.card-img-top(src=recipe.imageName alt='Card image cap')
-          .card-body
-            h5.card-title=recipe.name
-            p.card-text=recipe.description
-            a.btn.btn-primary(href="/recipe/"+recipe.id) Go somewhere
+      if recipes.length === 0 
+       div.text-center.margin-auto.col-sm-12 There is no Recipe 
+         a(href="/recipe/new") Create new recipe  
+      else  
+        each recipe in recipes
+          .col-sm-4
+           .card(style='width: 18rem;')
+            img.card-img-top(src=recipe.imageName alt='Card image cap')
+            .card-body
+              h5.card-title=recipe.name
+              p.card-text=recipe.description
+              a.btn.btn-primary(href="/recipe/"+recipe.id) Go somewhere
