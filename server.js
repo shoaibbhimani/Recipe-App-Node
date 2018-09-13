@@ -4,6 +4,8 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const passport = require("passport");
 const session = require("express-session");
+const cookieParser = require("cookie-parser");
+const flash = require("express-flash-notification");
 require("dotenv").config();
 require("express-async-errors");
 
@@ -14,7 +16,7 @@ require("./mongoose");
 require("./models/Recipe");
 require("./models/User");
 
-//Image Configuration
+//Configuration
 require("./handler/multer");
 require("./handler/cloudinary");
 require("./handler/passport");
@@ -26,18 +28,26 @@ app.set("view engine", "pug");
 //MiddleWare
 app
   .use(bodyParser.json())
+  .use(bodyParser.urlencoded({ extended: true }))
+  .use(express.static("public"))
+  .use(cookieParser())
   .use(
     session({
       secret: "keyboard cat",
       resave: false,
-      saveUninitialized: true,
-      cookie: { secure: true }
+      saveUninitialized: true
     })
   )
-  .use(bodyParser.urlencoded({ extended: true }))
-  .use(express.static("public"))
   .use(passport.initialize())
   .use(passport.session());
+
+app.use(flash(app));
+
+//Make Variable Avaliable to all Partials
+app.use((req, res, next) => {
+  res.locals.user = req.user || null;
+  next();
+});
 
 //Routes
 app.use("/", require("./routes/recipe")).use("/", require("./routes/auth"));

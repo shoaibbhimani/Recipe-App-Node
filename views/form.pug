@@ -4,8 +4,8 @@ block content
  - const directionText = body && body.directions ? body.directions : [""];
  - const directions =  typeof directionText === "string" ? [directionText] : directionText;
  div(style="width:50%;margin:0 auto;")
-  h2 Add New Recipe
-  form(action="/recipe/add" method="POST" enctype="multipart/form-data")
+  h2= body && body._id ? "Edit Recipe" : "Add New Recipe"
+  form(action=body && body._id ? `/recipe/${body._id}` : "/recipe/add" method="POST" enctype="multipart/form-data")
     .form-group
         label(for='name') Name
         input.form-control(class=errors && errors.name ? "text-error" : ""  name="name" type='text', placeholder='eg:Poha' value=body && body.name)
@@ -19,6 +19,9 @@ block content
     .form-group
         label(for='photo') Photo
         input(type="file" name="photo" id="photo" accept="image/gif, image/png, image/jpeg")
+        if(body && body.imageName)
+          div
+           img(src=body.imageName.replace("/upload", "/upload/w_200,h_200"))
     .form-group
     div Add Directions
         div.directions

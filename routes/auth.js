@@ -15,6 +15,10 @@ router
       title: "Sign Up"
     });
   })
+  .get("/logout", (req, res) => {
+    req.logout();
+    res.redirect("/");
+  })
   .post(
     "/validate_user",
     passport.authenticate("local", {
@@ -34,6 +38,13 @@ router
     user.hash = hash;
     await user.save();
     res.send({ ok: true });
+  })
+  .get("/user", (req, res) => {
+    res.send({
+      isLoggedIn: req.isAuthenticated(),
+      user: req.user,
+      cookies: req.cookies
+    });
   });
 
 module.exports = router;

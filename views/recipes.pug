@@ -3,10 +3,10 @@ extends layout
 block content
   .container
     .row
-      if recipes.length === 0 
-       div.text-center.margin-auto.col-sm-12 There is no Recipe 
-         a(href="/recipe/new") Create new recipe  
-      else  
+      if recipes.length === 0
+       div.text-center.margin-auto.col-sm-12 There is no Recipe
+         a(href="/recipe/new") Create new recipe
+      else
         each recipe in recipes
           .col-sm-4
            .card(style='width: 18rem;')
@@ -14,4 +14,5 @@ block content
             .card-body
               h5.card-title=recipe.name
               p.card-text=recipe.description
-              a.btn.btn-primary(href="/recipe/"+recipe.id) Go somewhere
+              a.btn(href="/recipe/edit/"+recipe.id) Edit
+              a.btn.btn-primary(href="/recipe/"+recipe.id) View

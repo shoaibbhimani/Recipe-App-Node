@@ -5,13 +5,13 @@ block content
   h2 Login
   form(action="/validate_user" method="POST")
     .form-group
-        label(for='name') Name
-        input.form-control(name="name" type='email' placeholder='shoaib@example.com')
+        label(for='email') Email
+        input.form-control(name="email" type='email' placeholder='shoaib@example.com')
         if errors && errors.email
          small#emailHelp.form-text.text-muted=errors.email
     .form-group
-        label(for='name') Name
-        input.form-control(name="name" type='password', placeholder='Password')
+        label(for='password') Password
+        input.form-control(name="password" type='password', placeholder='Password')
         if errors && errors.password
          small#emailHelp.form-text.text-muted=errors.password
     input(type="submit" value="Save →" class="btn btn-primary")

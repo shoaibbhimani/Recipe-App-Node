@@ -7,21 +7,28 @@ html
     link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous")
     link(rel="stylesheet" href="/css/index.css")
   body
-   flash
     block header
+     - flash
       nav.navbar.navbar-expand-lg.navbar-light.bg-light
         button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarSupportedContent', aria-controls='navbarSupportedContent', aria-expanded='false', aria-label='Toggle navigation')
           span.navbar-toggler-icon
         #navbarSupportedContent.collapse.navbar-collapse
           ul.navbar-nav.mr-auto
-            li.nav-item
-              a.nav-link(href='/') Recipes
-            li.nav-item
-              a.nav-link(href="/recipe/new") Add New
-            li.nav-item
-            a.nav-link(href="/signup") Sign Up
+            if user
               li.nav-item
-            a.nav-link(href="/login") Login
+                a.nav-link(href="/recipe/new") Add New
+              li.nav-item
+                a.nav-link(href='/') Recipes
+              li.nav-item
+                a.nav-link(href="/logout") Logout
+            else
+              li.nav-item
+                a.nav-link(href="/signup") Sign Up
+              li.nav-item
+                a.nav-link(href="/login") Login
+              li.nav-item
+                a.nav-link(href="/user") User
+
 
     .content
     block content
