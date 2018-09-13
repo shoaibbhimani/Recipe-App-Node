@@ -28,11 +28,11 @@ const recipeSchema = new mongoose.Schema(
         required: "You must supply ingredients"
       }
     ],
-    // created_by: {
-    //   type: mongoose.Schema.ObjectId,
-    //   ref: "User",
-    //   required: "You must supply an Created"
-    // }
+    createdBy: {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+      required: "You must supply an Created"
+    }
   },
   {
     timestamps: true

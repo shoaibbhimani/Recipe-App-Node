@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const bodyParser = require("body-parser");
+const passport = require("passport");
+const session = require("express-session");
 require("dotenv").config();
 require("express-async-errors");
 
@@ -12,6 +14,11 @@ require("./mongoose");
 require("./models/Recipe");
 require("./models/User");
 
+//Image Configuration
+require("./handler/multer");
+require("./handler/cloudinary");
+require("./handler/passport");
+
 //Set Templating Engine
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
@@ -19,12 +26,18 @@ app.set("view engine", "pug");
 //MiddleWare
 app
   .use(bodyParser.json())
+  .use(
+    session({
+      secret: "keyboard cat",
+      resave: false,
+      saveUninitialized: true,
+      cookie: { secure: true }
+    })
+  )
   .use(bodyParser.urlencoded({ extended: true }))
-  .use(express.static("public"));
-
-//Image Configuration
-require("./handler/multer");
-require("./handler/cloudinary");
+  .use(express.static("public"))
+  .use(passport.initialize())
+  .use(passport.session());
 
 //Routes
 app.use("/", require("./routes/recipe")).use("/", require("./routes/auth"));

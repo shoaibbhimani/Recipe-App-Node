@@ -1,4 +1,8 @@
 const router = require("express").Router();
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+const passport = require("passport");
+const User = mongoose.model("User");
 
 router
   .get("/login", (req, res) => {
@@ -11,8 +15,25 @@ router
       title: "Sign Up"
     });
   })
-  .post("/check/login", (req, res) => {
-    res.redirect("/");
+  .post(
+    "/validate_user",
+    passport.authenticate("local", {
+      failureRedirect: "/login",
+      // failureFlash: "Failed Login!",
+      successRedirect: "/"
+      // successFlash: "You are now logged in!"
+    })
+  )
+  .post("/create_user", async (req, res) => {
+    const saltRounds = 10;
+    const salt = await bcrypt.genSalt(saltRounds);
+    const hash = await bcrypt.hash(req.body.password, salt);
+
+    const user = new User();
+    user.email = req.body.email;
+    user.hash = hash;
+    await user.save();
+    res.send({ ok: true });
   });
 
 module.exports = router;

@@ -1,0 +1,4 @@
+1. Create a Model and Add Relation
+2. Install Passport and chosen Startegy
+3. Configure Passport local
+  - Passport use add

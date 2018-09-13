@@ -2,8 +2,8 @@ extends layout
 
 block content
  div(style="width:50%;margin:0 auto;")
-  h2 Sign Up 
-  form(action="/check/login" method="POST")
+  h2 Sign Up
+  form(action="/create_user" method="POST")
     .form-group
         label(for='email') Email
         input.form-control(name="email" type='text', placeholder='Enter Your email')
@@ -11,6 +11,6 @@ block content
         label(for='password') Password
         input.form-control(name="password" type='password', placeholder='Enter your password')
     .form-group
-        label(for='password') Confirm Password
-        input.form-control(name="password" type='password', placeholder='Enter your password')
+        label(for='confirm-password') Confirm Password
+        input.form-control(name="confirm-password" type='password', placeholder='Enter your password')
     input(type="submit" value="Save →" class="btn btn-primary")

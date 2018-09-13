@@ -5,8 +5,7 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      trim: true,
-      required: "Please enter a Recipe name!"
+      lowercase: true
     },
     email: {
       type: String,
@@ -14,8 +13,11 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       unique: true,
       validate: [validator.isEmail, "Invalid Email Address"],
-      required: "Please enter a Recipe name!"
-    }
+      required: "Please enter a valid Email",
+      index: true
+    },
+    hash: String,
+    bio: String
   },
   {
     timestamps: true

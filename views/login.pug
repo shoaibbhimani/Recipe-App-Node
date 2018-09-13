@@ -3,10 +3,15 @@ extends layout
 block content
  div(style="width:50%;margin:0 auto;")
   h2 Login
-  form(action="/check/login" method="POST")
+  form(action="/validate_user" method="POST")
     .form-group
         label(for='name') Name
-        input.form-control(name="name" type='text', placeholder='eg:Poha')
-        if errors && errors.name
-         small#emailHelp.form-text.text-muted We'll never share your email with anyone else.
+        input.form-control(name="name" type='email' placeholder='shoaib@example.com')
+        if errors && errors.email
+         small#emailHelp.form-text.text-muted=errors.email
+    .form-group
+        label(for='name') Name
+        input.form-control(name="name" type='password', placeholder='Password')
+        if errors && errors.password
+         small#emailHelp.form-text.text-muted=errors.password
     input(type="submit" value="Save →" class="btn btn-primary")
