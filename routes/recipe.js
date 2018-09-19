@@ -7,7 +7,7 @@ const upload = require("../handler/multer");
 const validation = require("../handler/validation");
 
 router
-  .get(["/", "/recipes"], async (req, res) => {
+  .get(["/", "/recipes"], validation.isAuthenticated, async (req, res) => {
     const recipes = await Recipe.find({});
     res.render("recipes", {
       title: "Recipes List",
@@ -21,39 +21,33 @@ router
       recipes
     });
   })
-  .get("/recipe/new", validation.isAuthenticated, async (req, res) => {
+  .get("/recipe/new", async (req, res) => {
     res.render("form", {
-      title: "Add New Recipe",
-      isEdit: false
+      title: "Add New Recipe"
     });
   })
   .get("/recipe/edit/:recipeId", async (req, res) => {
     const recipe = await Recipe.findOne({ _id: req.params.recipeId });
     res.render("form", {
       title: "Edit Recipe",
-      body: recipe,
-      isEdit: true
+      body: recipe
     });
   })
-  .post(
-    "/recipe/:recipeId",
-    // validation.validateRegisterRecipe,
-    // validation.sendErrorsAfterValidation,
-    async (req, res) => {
-      await Recipe.findOneAndUpdate(
-        { _id: req.params.recipeId },
-        {
-          $set: req.body
-        },
-        {
-          new: true,
-          runValidators: true
-        }
-      );
-
-      res.redirect(`/recipe/${req.params.recipeId}`);
-    }
-  )
+  .post("/recipe/add/:recipeId", upload.single("photo"), async (req, res) => {
+    await Recipe.findOneAndUpdate(
+      {
+        _id: req.params.recipeId
+      },
+      {
+        $set: req.body
+      },
+      {
+        new: true,
+        runValidators: true
+      }
+    );
+    res.redirect(`/recipe/${req.params.recipeId}`);
+  })
   .get("/recipe/:recipeId", async (req, res) => {
     const recipe = await Recipe.findOne({ _id: req.params.recipeId });
     res.render("recipe_details", {
@@ -64,8 +58,8 @@ router
   .post(
     "/recipe/add",
     upload.single("photo"),
-    // validation.validateRegisterRecipe,
-    // validation.sendErrorsAfterValidation,
+    validation.validateRegisterRecipe,
+    validation.sendErrorsAfterValidation,
     async (req, res) => {
       let uploadResult = "";
       if (req.file) {
@@ -82,7 +76,7 @@ router
       recipe.createdBy = req.user.id;
       await recipe.save();
 
-      await res.redirect("/recipe/new");
+      await res.redirect("/recipes");
     }
   );
 

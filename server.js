@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const passport = require("passport");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
+const morgan = require("morgan");
 const flash = require("express-flash-notification");
 require("dotenv").config();
 require("express-async-errors");
@@ -38,6 +39,7 @@ app
       saveUninitialized: true
     })
   )
+  .use(morgan("dev"))
   .use(passport.initialize())
   .use(passport.session());
 
@@ -53,13 +55,13 @@ app.use((req, res, next) => {
 app.use("/", require("./routes/recipe")).use("/", require("./routes/auth"));
 
 //Not Found Route
-app.use((req, res) => {
-  res.render("404", {
-    title: "Page Not Found"
-  });
+app.use((req, res, next) => {
+  var err = new Error("Not Found");
+  err.status = 404;
+  next(err);
 });
 
-//error handler
+//Error handler
 if (app.get("env") === "production") {
   app.use((error, req, res, next) => {
     res.render("error", {

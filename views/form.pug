@@ -4,16 +4,17 @@ block content
  - const directionText = body && body.directions ? body.directions : [""];
  - const directions =  typeof directionText === "string" ? [directionText] : directionText;
  div(style="width:50%;margin:0 auto;")
-  h2= body && body._id ? "Edit Recipe" : "Add New Recipe"
-  form(action=body && body._id ? `/recipe/${body._id}` : "/recipe/add" method="POST" enctype="multipart/form-data")
+  - const isEdit = body && body._id;
+  h2= isEdit ? "Edit Recipe" : "Add New Recipe"
+  form(action=isEdit ? `/recipe/add/${body._id}` : "/recipe/add" method="POST" enctype="multipart/form-data")
     .form-group
         label(for='name') Name
-        input.form-control(class=errors && errors.name ? "text-error" : ""  name="name" type='text', placeholder='eg:Poha' value=body && body.name)
+        input.form-control(class=errors && errors.name ? "text-error" : ""  name="name" type='text' placeholder='eg:Poha' value=body && body.name)
         if errors && errors.name
-         small#emailHelp.form-text.text-error= errors.name
+         small#emailHelp.form-text.text-error=errors.name
     .form-group
         label(for='description') Description
-        input.form-control(class=errors && errors.description ? "text-error" : "" name="description" type='text', placeholder='eg: Description' value=body && body.description)
+        input.form-control(class=errors && errors.description ? "text-error" : "" name="description" type='text' placeholder='eg: Description' value=body && body.description required)
         if errors && errors.description
          small#emailHelp.form-text.text-error=errors.description
     .form-group
@@ -27,7 +28,7 @@ block content
         div.directions
             each direction in directions
                 .input-group
-                    input.form-control(type='text' value=direction placeholder="Recipient's username" name="directions")
+                    input.form-control(type='text' value=direction placeholder="Recipient's username" name="directions" required)
                     button.btn.btn-outline-secondary.remove-btn(type='button') Remove
         button(type="button" class="btn btn-small" id="add") Add Photo
     input(type="submit" value="Save →" class="btn btn-primary")
